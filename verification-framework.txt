@@ -1,0 +1,60 @@
+// Testbench - Cognitive task validation analog
+module CPU_TestBench;
+    // Clock generation - Neural oscillation analog
+    reg clk = 0;
+    always #5 clk = ~clk;
+    
+    // Stimulus generation - Sensory input analog
+    reg rst;
+    reg [7:0] instruction;
+    wire [3:0] pc;
+    wire [3:0] result;
+    
+    // Test sequences - Learning patterns
+    initial begin
+        // Reset sequence - Neural reset
+        rst = 1;
+        @(posedge clk);
+        rst = 0;
+        
+        // Test LOAD IMM
+        // Cognitive pattern: Direct value acquisition
+        instruction = {2'b11, 2'b01, 4'b1010}; // LOAD IMM R1, #10
+        @(posedge clk);
+        if (result !== 4'b1010)
+            $error("LOAD IMM failed!");
+            
+        // Test JUMP
+        // Cognitive pattern: Attention shift
+        instruction = {2'b10, 2'b01, 2'b10}; // JUMP R1, R2
+        @(posedge clk);
+        if (pc !== expected_pc)
+            $error("JUMP failed!");
+    end
+    
+    // Assertion checkers - Neural validation
+    property valid_pc_update;
+        @(posedge clk) disable iff (rst)
+        $rose(jump_en) |-> ##1 (pc == $past(ra_value + rb_value));
+    endproperty
+    
+    assert property (valid_pc_update)
+    else $error("Invalid PC update detected");
+    
+    // Coverage - Learning assessment
+    covergroup instruction_coverage;
+        option.per_instance = 1;
+        
+        cp_opcode: coverpoint instruction[7:6] {
+            bins load_imm = {2'b11};
+            bins jump = {2'b10};
+        }
+        
+        cp_registers: coverpoint instruction[5:4] {
+            bins regs[] = {[0:3]};
+        }
+    endgroup
+    
+    instruction_coverage cg = new();
+    always @(posedge clk) cg.sample();
+endmodule

@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant CLK as Clock
+    participant IF as Instruction Fetch
+    participant ID as Instruction Decode
+    participant EX as Execute
+    participant WB as Write Back
+    
+    Note over CLK,WB: LOAD IMM Instruction
+    CLK->>IF: Fetch LOAD IMM
+    IF->>ID: Decode opcode=11
+    ID->>EX: imm_load=1, reg_write=1
+    EX->>WB: Write immediate to register
+    
+    Note over CLK,WB: JUMP Instruction
+    CLK->>IF: Fetch JUMP
+    IF->>ID: Decode opcode=10
+    ID->>EX: jump_en=1, read RA/RB
+    EX->>WB: Update PC=RA+RB
