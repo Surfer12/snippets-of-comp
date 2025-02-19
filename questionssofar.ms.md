@@ -227,8 +227,6 @@ Jump target computation timing
 
 
 
-Would you like me to:
-
 Provide a detailed timing diagram for the JUMP execution?
 Expand on any specific component's modifications?
 Show the LTSpice implementation of the modified PC logic?
